@@ -1,4 +1,15 @@
+'''
+DEPENDENCIES:
+	libxml2dom (http://www.boddie.org.uk/python/libxml2dom.html)
+
+
+'''
+
+
 import urllib, re
+import libxml2dom
+
+NUMBER_VENUES = 2 # Number of sites to show from BookScouter for an item.
 
 letterstosearch = ['+']
 bookids = ['18405','12710'] # Eventually this will be an empty array
@@ -21,3 +32,11 @@ for i in bookids:
 	price = re.search("(?<=Price:</font> \$)([0-9\.]*)", html).group(0)
 	isbn = re.search("(?<=ISBN-10:</font> )[0-9]{10}", html).group(0)
 	print("Found ISBN " + isbn + " at price " + price)
+	g = urllib.urlopen("http://m.bookscouter.com/prices.php?isbn="+isbn)
+	html = libxml2dom.parseString(g.read(), html=1)
+	venues = {}
+	tablecells = html.getElementsByTagName("td")
+	for n in xrange(0,NUMBER_VENUES*2,2):
+		name = tablecells[n].textContent
+		price  = tablecells[n+1].xpath(".//a")[0].textContent
+		print("   " + name + " offers " + str(price))
