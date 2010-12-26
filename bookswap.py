@@ -31,12 +31,13 @@ for i in bookids:
 	html = f.read()
 	price = re.search("(?<=Price:</font> \$)([0-9\.]*)", html).group(0)
 	isbn = re.search("(?<=ISBN-10:</font> )[0-9]{10}", html).group(0)
-	print("Found ISBN " + isbn + " at price " + price)
+	print(isbn + " " + price), # This comma trick is the stupidest thing ever.
 	g = urllib.urlopen("http://m.bookscouter.com/prices.php?isbn="+isbn)
 	html = libxml2dom.parseString(g.read(), html=1)
 	venues = {}
 	tablecells = html.getElementsByTagName("td")
 	for n in xrange(0,NUMBER_VENUES*2,2):
-		name = tablecells[n].textContent
+		name = tablecells[n].textContent.replace(" ","_")
 		price  = tablecells[n+1].xpath(".//a")[0].textContent
-		print("   " + name + " offers " + str(price))
+		print(name + " " + str(price)),
+	print("")
