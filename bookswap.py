@@ -1,9 +1,23 @@
 import urllib, re
 
-classes = ['EECS233']#,'EECS245','EECS281','EECS290','EECS301','EECS302','EECS304','EECS305','EECS309','EECS313','EECS314','EECS315','ENGR131','ENGR145','ENGR200','ENGR210','ENGR216','ENGR225','PHYS121','PHYS122','CHEM111','MATH121','MATH122','ECIV160']
+letterstosearch = ['+']
+bookids = ['18405','12710'] # Eventually this will be an empty array
 
-for c in classes:
-	f = urllib.urlopen("http://bookswap.case.edu/search.php?class="+c)
-	books = re.findall('(?<=bookdata\.php\?bookid=)([0-9]*)', f.read())
-	print(books)
+print("Pulling Bookswap Database")
+'''
+Commenting out for now because I want to minimize the pain on their server
+
+for c in letterstosearch:
+	f = urllib.urlopen("http://bookswap.case.edu/search.php?title="+c+"&sort=price&order=desc")
+	bookids = re.findall('(?<=bookdata\.php\?bookid=)([0-9]*)', f.read())
 	f.close()
+'''
+
+print("Found " + str(len(bookids)) + " results. Pulling data...")
+
+for i in bookids:
+	f = urllib.urlopen("http://bookswap.case.edu/bookdata.php?bookid="+i)
+	html = f.read()
+	price = re.search("(?<=Price:</font> \$)([0-9\.]*)", html).group(0)
+	isbn = re.search("(?<=ISBN-10:</font> )[0-9]{10}", html).group(0)
+	print("Found ISBN " + isbn + " at price " + price)
