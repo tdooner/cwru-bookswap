@@ -12,7 +12,7 @@ IFS=$'\n'
 for line in $(cat $1); do
 	ISBN=`echo $line | cut -d " " -f 1`
 	PRICE=`echo $line | cut -d " " -f 2`
-	PRICE2=`echo $line | cut -d " " -f 4` #Seller 1's Offer
+	PRICE2=`echo $line | cut -d " " -f 3` #Seller 1's Offer
 	if [ $PRICE == "0.00" ]
 	then
 		PERCENT1="0.00"
@@ -20,7 +20,7 @@ for line in $(cat $1); do
 		PERCENT1=`echo $PRICE2/$PRICE | bc -l`
 	fi
 	
-	PRICE3=`echo $line | cut -d " " -f 6` #Seller 2's Offer
+	PRICE3=`echo $line | cut -d " " -f 5` #Seller 2's Offer
 	if [ $PRICE == "0.00" ]
 	then
 		PERCENT2="0.00"
